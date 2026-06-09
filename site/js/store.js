@@ -49,20 +49,63 @@ function mediaInner(item) {
   return `<div class="ph" style="background:linear-gradient(135deg, ${tint}, #fff)">${icon(ink)}</div>`;
 }
 
-// Product-page image gallery: big main image + clickable thumbnails.
+// Product-page image carousel: main image + arrows + counter + thumbnails.
 function galleryHtml(item) {
   const imgs = (item.images && item.images.length) ? item.images
              : (item.image ? [item.image] : []);
   if (!imgs.length) return `<div class="pd-media">${mediaInner(item)}</div>`;
 
-  const main = `<div class="pd-media"><img id="pdMain" src="${imgs[0]}" alt="${item.title}"></div>`;
-  if (imgs.length < 2) return `<div class="pd-gallery">${main}</div>`;
+  if (imgs.length < 2) {
+    return `<div class="pd-gallery"><div class="pd-media"><img id="pdMain" src="${imgs[0]}" alt="${item.title}"></div></div>`;
+  }
 
+  const main = `<div class="pd-media">
+      <img id="pdMain" src="${imgs[0]}" alt="${item.title}">
+      <button class="pd-nav prev" id="pdPrev" aria-label="Previous image">&#8249;</button>
+      <button class="pd-nav next" id="pdNext" aria-label="Next image">&#8250;</button>
+      <div class="pd-counter"><span id="pdIdx">1</span> / ${imgs.length}</div>
+    </div>`;
   const thumbs = imgs.map((u, i) => {
     const thumb = u.replace("s-l960", "s-l300");
-    return `<button class="pd-thumb ${i === 0 ? "active" : ""}" data-src="${u}" aria-label="View image ${i + 1}"><img src="${thumb}" alt=""></button>`;
+    return `<button class="pd-thumb ${i === 0 ? "active" : ""}" data-i="${i}" aria-label="View image ${i + 1}"><img src="${thumb}" alt=""></button>`;
   }).join("");
-  return `<div class="pd-gallery">${main}<div class="pd-thumbs">${thumbs}</div></div>`;
+  return `<div class="pd-gallery"><div class="pd-media-wrap">${main}</div><div class="pd-thumbs">${thumbs}</div></div>`;
+}
+
+// Wire up carousel controls (arrows, thumbnails, keyboard, swipe).
+function setupGallery(root, imgs) {
+  const main = root.querySelector("#pdMain");
+  if (!main || imgs.length < 2) return;
+  const idxEl = root.querySelector("#pdIdx");
+  const thumbs = Array.from(root.querySelectorAll(".pd-thumb"));
+  let idx = 0;
+
+  function show(n) {
+    idx = (n + imgs.length) % imgs.length;
+    main.src = imgs[idx];
+    if (idxEl) idxEl.textContent = idx + 1;
+    thumbs.forEach((b, i) => b.classList.toggle("active", i === idx));
+    if (thumbs[idx]) thumbs[idx].scrollIntoView({ block: "nearest", inline: "center" });
+  }
+
+  const prev = root.querySelector("#pdPrev");
+  const next = root.querySelector("#pdNext");
+  if (prev) prev.addEventListener("click", () => show(idx - 1));
+  if (next) next.addEventListener("click", () => show(idx + 1));
+  thumbs.forEach(b => b.addEventListener("click", () => show(parseInt(b.dataset.i, 10))));
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") show(idx - 1);
+    else if (e.key === "ArrowRight") show(idx + 1);
+  });
+
+  let x0 = null;
+  main.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+  main.addEventListener("touchend", e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) show(dx < 0 ? idx + 1 : idx - 1);
+    x0 = null;
+  }, { passive: true });
 }
 
 // Meta line under a title: cards have no size, so show set/grade only.
@@ -228,13 +271,9 @@ function initProduct() {
         </div>
       </div>`;
 
-    root.querySelectorAll(".pd-thumb").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const m = document.getElementById("pdMain");
-        if (m) m.src = btn.dataset.src;
-        root.querySelectorAll(".pd-thumb").forEach(b => b.classList.toggle("active", b === btn));
-      });
-    });
+    const galleryImgs = (item.images && item.images.length) ? item.images
+                      : (item.image ? [item.image] : []);
+    setupGallery(root, galleryImgs);
   }).catch(() => {
     root.innerHTML = `<div class="wrap empty">Couldn't load this product. Please refresh.</div>`;
   });
