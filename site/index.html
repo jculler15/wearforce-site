@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wearforce — Sneakers & Threads</title>
+  <meta name="description" content="The Wearforce: authenticated sneakers, apparel, and sports cards at fair, honest prices. Shipped fast with buyer protection on every order.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Motto bar -->
+  <div class="topbar">Sneakers <span class="dot">&amp;</span> Threads <span class="dot">·</span> Authenticated <span class="dot">·</span> Fairly Priced</div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand-logo" href="index.html" aria-label="The Wearforce home">
+        <img src="assets/wearforce-red.png" alt="The Wearforce — Sneakers & Threads">
+      </a>
+      <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      <nav class="main-nav">
+        <a href="#shop">Shop</a>
+        <a href="#why">Why Us</a>
+        <a href="#how">How It Works</a>
+        <a href="https://www.ebay.com/" target="_blank" rel="noopener" class="nav-ebay">Our eBay Store</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <span class="eyebrow">Sneakers &amp; Threads</span>
+      <h1>The gear you want,<br>at a <span class="accent">fair price.</span></h1>
+      <p>Authenticated sneakers, apparel, and sports cards, priced honestly and shipped fast.</p>
+      <div class="hero-cta">
+        <a href="#shop" class="btn btn-red">Shop the Collection</a>
+        <a href="#how" class="btn btn-outline">How It Works</a>
+      </div>
+      <div class="hero-trust">
+        <span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          100% Authentic
+        </span>
+        <span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Fair, honest pricing
+        </span>
+        <span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 7h13v8H3zM16 10h4l1 5h-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="1.6" stroke="currentColor" stroke-width="2"/></svg>
+          Fast US shipping
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop -->
+  <section class="shop" id="shop">
+    <div class="wrap">
+      <div class="shop-head">
+        <div>
+          <h2>In Stock Now</h2>
+          <div class="count" id="count">Loading…</div>
+        </div>
+        <div class="sort">
+          <select id="sort" aria-label="Sort">
+            <option value="featured">Featured</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Search sneakers, apparel, cards…" autocomplete="off">
+        </div>
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- Why The Wearforce -->
+  <section class="value" id="why">
+    <div class="wrap">
+      <div class="value-head">
+        <h2>Why The Wearforce</h2>
+        <p>Sneakers, threads, and cards from someone who actually cares about getting you a fair deal.</p>
+      </div>
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Fair prices, always</h3>
+          <p>Honest pricing on the pieces you want. You get a good deal, not a markup for the hype.</p>
+        </div>
+        <div class="value-card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Authentic, guaranteed</h3>
+          <p>Every sneaker, piece of apparel, and card is checked before it ships. The real deal, every time.</p>
+        </div>
+        <div class="value-card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 7h13v8H3zM16 10h4l1 5h-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="1.6" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>Shipped fast</h3>
+          <p>Most orders go out within one business day, with buyer protection on every purchase.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="shop" id="how">
+    <div class="wrap">
+      <div class="shop-head"><h2>How It Works</h2></div>
+      <div class="value-grid">
+        <div class="value-card">
+          <div class="card-cat">Step 01</div>
+          <h3 class="display" style="font-size:20px;margin:8px 0 7px;">Browse the collection</h3>
+          <p style="color:var(--ink-soft);font-size:14.5px;margin:0;">Sneakers, threads, and cards in one place, updated automatically as new pieces land.</p>
+        </div>
+        <div class="value-card">
+          <div class="card-cat">Step 02</div>
+          <h3 class="display" style="font-size:20px;margin:8px 0 7px;">Tap buy</h3>
+          <p style="color:var(--ink-soft);font-size:14.5px;margin:0;">Checkout is handled securely through our trusted marketplace partner.</p>
+        </div>
+        <div class="value-card">
+          <div class="card-cat">Step 03</div>
+          <h3 class="display" style="font-size:20px;margin:8px 0 7px;">Laced up fast</h3>
+          <p style="color:var(--ink-soft);font-size:14.5px;margin:0;">Your order ships quick, fairly priced and backed by buyer protection.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="assets/wearforce-white.png" alt="The Wearforce">
+          <p>Sneakers &amp; threads. Authenticated sneakers, apparel, and sports cards at fair prices, shipped fast.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="#shop">Sneakers</a>
+          <a href="#shop">Apparel</a>
+          <a href="#shop">Cards</a>
+          <a href="#shop">All Items</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#why">Why Us</a>
+          <a href="#how">How It Works</a>
+          <a href="#">Authenticity</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Find Us</h4>
+          <a href="https://www.ebay.com/" target="_blank" rel="noopener">eBay Store</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 The Wearforce. All rights reserved.</span>
+        <span>Sneakers &amp; Threads · Authenticity guaranteed.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/store.js"></script>
+</body>
+</html>

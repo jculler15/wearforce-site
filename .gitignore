@@ -1,0 +1,6 @@
+# Never commit eBay keys
+scripts/config.json
+
+# macOS noise
+.DS_Store
+**/._*

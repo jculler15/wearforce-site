@@ -1,0 +1,6 @@
+{
+  "clientId": "PASTE-YOUR-EBAY-APP-ID-CLIENT-ID-HERE",
+  "clientSecret": "PASTE-YOUR-EBAY-CERT-ID-CLIENT-SECRET-HERE",
+  "sellerUsername": "thewearforce",
+  "marketplace": "EBAY_US"
+}
