@@ -334,16 +334,31 @@ img { max-width: 100%; display: block; }
 .crumbs { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; }
 .crumbs a:hover { color: var(--red); }
 .pd-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: start; }
+.pd-gallery { position: sticky; top: 104px; }
 .pd-media {
-  background: var(--soft);
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   aspect-ratio: 4 / 3;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; position: relative;
 }
-.pd-media img { width: 100%; height: 100%; object-fit: cover; }
+.pd-media img { width: 100%; height: 100%; object-fit: contain; }
 .pd-media .ph svg { width: 46%; height: 46%; }
+.pd-thumbs {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+}
+.pd-thumb {
+  width: 70px; height: 70px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0; cursor: pointer; overflow: hidden;
+  transition: border-color .15s;
+}
+.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pd-thumb:hover { border-color: var(--ink); }
+.pd-thumb.active { border-color: var(--red); }
 .pd-info { padding-top: 6px; }
 .pd-cat { color: var(--red); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 12.5px; }
 .pd-info h1 {

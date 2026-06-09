@@ -31,11 +31,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore description cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: desc-cache-${{ github.run_id }}
+          restore-keys: desc-cache-
+
       - name: Pull latest eBay listings
         env:
           EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
           EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
           EBAY_SELLER: thewearforce
+          DESC_CACHE: .cache/descriptions.json
         run: python scripts/fetch_ebay.py
 
       - name: Prepare the published folder

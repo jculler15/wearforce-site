@@ -214,6 +214,25 @@ def big_image(url):
     return re.sub(r"s-l\d+", "s-l960", url) if url else None
 
 
+def collect_images(s):
+    """All listing photos (main + extras), upscaled and de-duplicated."""
+    urls = []
+    main = (s.get("image") or {}).get("imageUrl")
+    if main:
+        urls.append(main)
+    for im in (s.get("additionalImages") or []):
+        u = im.get("imageUrl")
+        if u:
+            urls.append(u)
+    seen, out = set(), []
+    for u in urls:
+        b = big_image(u)
+        if b and b not in seen:
+            seen.add(b)
+            out.append(b)
+    return out
+
+
 def make_desc(category, condition):
     if category == "Cards":
         return f"{condition}. Priced fairly and shipped safely."
@@ -235,6 +254,7 @@ def to_product(s):
     brand = detect_brand(raw_title, name)
     condition = normalize_condition(s.get("condition"))
     price = s.get("price") or {}
+    images = collect_images(s)
 
     return {
         "id": s.get("itemId", ""),
@@ -246,10 +266,82 @@ def to_product(s):
         "condition": condition,
         "price": float(price.get("value", 0) or 0),
         "currency": price.get("currency", "USD"),
-        "image": big_image((s.get("image") or {}).get("imageUrl")),
+        "image": images[0] if images else None,
+        "images": images,
         "ebayUrl": (s.get("itemWebUrl") or "https://www.ebay.com/").split("?")[0],
-        "description": make_desc(category, condition),
+        "description": make_desc(category, condition),  # replaced with real eBay text in enrich step
     }
+
+
+# ---------------------------------------------------------------- descriptions
+def get_browse_remaining(token):
+    """How many Browse API calls we have left today (None if unknown)."""
+    try:
+        r = urllib.request.Request(
+            "https://api.ebay.com/developer/analytics/v1_beta/rate_limit/?api_context=buy&api_name=browse")
+        r.add_header("Authorization", f"Bearer {token}")
+        d = json.load(urllib.request.urlopen(r))
+        for rl in d.get("rateLimits", []):
+            for res in rl.get("resources", []):
+                if res.get("name") == "buy.browse":
+                    for rate in res.get("rates", []):
+                        return rate.get("remaining")
+    except Exception:
+        pass
+    return None
+
+
+def fetch_description(token, item_id, marketplace):
+    try:
+        det = browse_get(f"/item/{urllib.parse.quote(item_id, safe='')}", token, marketplace)
+        text = (det.get("shortDescription") or det.get("description") or "").strip()
+        text = re.sub(r"<[^>]+>", " ", text)          # strip any HTML
+        text = re.sub(r"\s+", " ", text).strip()
+        return text or None
+    except urllib.error.HTTPError:
+        return None
+
+
+def enrich_descriptions(products, token, marketplace):
+    """Fill in real eBay descriptions, cached by item id so we only look up
+    NEW items. A rate-limit guard keeps us from ever exhausting the daily quota."""
+    cache_path = os.environ.get("DESC_CACHE", os.path.join(HERE, ".desc-cache.json"))
+    cache = {}
+    if os.path.exists(cache_path):
+        try:
+            cache = json.load(open(cache_path))
+        except Exception:
+            cache = {}
+
+    need = [p for p in products if p["id"] not in cache]
+    remaining = get_browse_remaining(token)
+    budget = max(0, remaining - 500) if isinstance(remaining, int) else len(need)
+
+    fetched = 0
+    for p in need:
+        if fetched >= budget:
+            break
+        desc = fetch_description(token, p["id"], marketplace)
+        if desc:
+            cache[p["id"]] = desc
+            fetched += 1
+        time.sleep(0.05)
+
+    for p in products:
+        if cache.get(p["id"]):
+            p["description"] = cache[p["id"]]   # else keep the templated fallback
+
+    current = {p["id"] for p in products}        # keep the cache lean
+    cache = {k: v for k, v in cache.items() if k in current}
+    try:
+        os.makedirs(os.path.dirname(cache_path) or ".", exist_ok=True)
+        json.dump(cache, open(cache_path, "w"))
+    except Exception:
+        pass
+
+    have = sum(1 for p in products if cache.get(p["id"]))
+    print(f"descriptions: {have}/{len(products)} have eBay text "
+          f"({fetched} fetched this run; quota remaining ~{remaining})")
 
 
 # ---------------------------------------------------------------- main
@@ -267,6 +359,9 @@ def main():
     # stable sort keeps newest-first order within each group
     cat_rank = {"Sneakers": 0, "Apparel": 1, "Cards": 2}
     products.sort(key=lambda p: cat_rank.get(p["category"], 3))
+
+    print("Filling in descriptions...")
+    enrich_descriptions(products, token, cfg["marketplace"])
 
     out = {
         "updated": date.today().isoformat(),

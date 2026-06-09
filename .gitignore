@@ -1,6 +1,10 @@
 # Never commit eBay keys
 scripts/config.json
 
+# local description cache
+scripts/.desc-cache.json
+.cache/
+
 # macOS noise
 .DS_Store
 **/._*

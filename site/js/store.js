@@ -49,6 +49,22 @@ function mediaInner(item) {
   return `<div class="ph" style="background:linear-gradient(135deg, ${tint}, #fff)">${icon(ink)}</div>`;
 }
 
+// Product-page image gallery: big main image + clickable thumbnails.
+function galleryHtml(item) {
+  const imgs = (item.images && item.images.length) ? item.images
+             : (item.image ? [item.image] : []);
+  if (!imgs.length) return `<div class="pd-media">${mediaInner(item)}</div>`;
+
+  const main = `<div class="pd-media"><img id="pdMain" src="${imgs[0]}" alt="${item.title}"></div>`;
+  if (imgs.length < 2) return `<div class="pd-gallery">${main}</div>`;
+
+  const thumbs = imgs.map((u, i) => {
+    const thumb = u.replace("s-l960", "s-l300");
+    return `<button class="pd-thumb ${i === 0 ? "active" : ""}" data-src="${u}" aria-label="View image ${i + 1}"><img src="${thumb}" alt=""></button>`;
+  }).join("");
+  return `<div class="pd-gallery">${main}<div class="pd-thumbs">${thumbs}</div></div>`;
+}
+
 // Meta line under a title: cards have no size, so show set/grade only.
 function metaText(item) {
   if (item.category === "Cards") return item.colorway || "";
@@ -179,9 +195,7 @@ function initProduct() {
       <div class="wrap">
         <div class="crumbs"><a href="index.html">Shop</a> / <span>${item.category}</span> / ${item.title}</div>
         <div class="pd-grid">
-          <div class="pd-media">
-            ${mediaInner(item)}
-          </div>
+          ${galleryHtml(item)}
           <div class="pd-info">
             <span class="pd-cat">${item.category}</span>
             <h1>${item.title}</h1>
@@ -213,6 +227,14 @@ function initProduct() {
           </div>
         </div>
       </div>`;
+
+    root.querySelectorAll(".pd-thumb").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const m = document.getElementById("pdMain");
+        if (m) m.src = btn.dataset.src;
+        root.querySelectorAll(".pd-thumb").forEach(b => b.classList.toggle("active", b === btn));
+      });
+    });
   }).catch(() => {
     root.innerHTML = `<div class="wrap empty">Couldn't load this product. Please refresh.</div>`;
   });
