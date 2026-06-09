@@ -268,6 +268,7 @@ def to_product(s):
         "currency": price.get("currency", "USD"),
         "image": images[0] if images else None,
         "images": images,
+        "listedDate": s.get("itemCreationDate") or s.get("itemOriginDate") or "",
         "ebayUrl": (s.get("itemWebUrl") or "https://www.ebay.com/").split("?")[0],
         "description": make_desc(category, condition),  # replaced with real eBay text in enrich step
     }
@@ -357,8 +358,8 @@ def main():
     products = [to_product(s) for s in summaries]
     # then lead with sneakers (the main line), then apparel, then cards;
     # stable sort keeps newest-first order within each group
-    cat_rank = {"Sneakers": 0, "Apparel": 1, "Cards": 2}
-    products.sort(key=lambda p: cat_rank.get(p["category"], 3))
+    # Newest listings first (so the storefront's default view shows recent items)
+    products.sort(key=lambda p: p.get("listedDate") or "", reverse=True)
 
     print("Filling in descriptions...")
     enrich_descriptions(products, token, cfg["marketplace"])

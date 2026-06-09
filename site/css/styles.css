@@ -290,6 +290,8 @@ img { max-width: 100%; display: block; }
 }
 .card:hover .card-go { color: var(--red); gap: 9px; }
 .empty { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1 / -1; }
+.more-wrap { text-align: center; margin-top: 34px; }
+.more-wrap .btn { min-width: 220px; }
 
 /* ---------- Value band (red) ---------- */
 .value { background: var(--red); color: #fff; padding: 74px 0; }

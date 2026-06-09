@@ -143,10 +143,13 @@ function initStore() {
   const searchEl = document.getElementById("search");
   const sortEl = document.getElementById("sort");
   const chipsEl = document.getElementById("chips");
+  const moreBtn = document.getElementById("showMore");
 
+  const PAGE_SIZE = 10;     // how many show by default / per "Show more"
   let all = [];
   let category = "All";
   let query = "";
+  let visible = PAGE_SIZE;
 
   function cardHtml(item) {
     const condClass = (item.condition || "").toLowerCase() === "used" ? "used" : "";
@@ -182,11 +185,20 @@ function initStore() {
     const sort = sortEl ? sortEl.value : "featured";
     if (sort === "low") list.sort((a, b) => a.price - b.price);
     else if (sort === "high") list.sort((a, b) => b.price - a.price);
+    // "featured" keeps the data order, which is newest-listed first
 
-    countEl.textContent = list.length + (list.length === 1 ? " item" : " items");
-    grid.innerHTML = list.length
-      ? list.map(cardHtml).join("")
+    const shown = list.slice(0, visible);
+    grid.innerHTML = shown.length
+      ? shown.map(cardHtml).join("")
       : `<div class="empty">No matches. Try a different search or category.</div>`;
+
+    if (list.length > shown.length) {
+      countEl.textContent = `Showing ${shown.length} of ${list.length}`;
+      if (moreBtn) { moreBtn.style.display = ""; moreBtn.textContent = `Show more (${list.length - shown.length} more)`; }
+    } else {
+      countEl.textContent = list.length + (list.length === 1 ? " item" : " items");
+      if (moreBtn) moreBtn.style.display = "none";
+    }
   }
 
   function buildChips() {
@@ -199,6 +211,7 @@ function initStore() {
       const btn = e.target.closest(".chip");
       if (!btn) return;
       category = btn.dataset.cat;
+      visible = PAGE_SIZE;
       chipsEl.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === btn));
       render();
     });
@@ -212,8 +225,9 @@ function initStore() {
     grid.innerHTML = `<div class="empty">Couldn't load products right now. Please refresh.</div>`;
   });
 
-  if (searchEl) searchEl.addEventListener("input", e => { query = e.target.value.trim(); render(); });
-  if (sortEl) sortEl.addEventListener("change", render);
+  if (searchEl) searchEl.addEventListener("input", e => { query = e.target.value.trim(); visible = PAGE_SIZE; render(); });
+  if (sortEl) sortEl.addEventListener("change", () => { visible = PAGE_SIZE; render(); });
+  if (moreBtn) moreBtn.addEventListener("click", () => { visible += PAGE_SIZE; render(); });
 }
 
 /* ---------------- Product detail (product.html) ---------------- */
