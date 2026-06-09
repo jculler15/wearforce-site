@@ -334,6 +334,7 @@ img { max-width: 100%; display: block; }
 .crumbs { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; }
 .crumbs a:hover { color: var(--red); }
 .pd-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: start; }
+.pd-grid > * { min-width: 0; }   /* let columns shrink, never force sideways scroll */
 .pd-gallery { position: sticky; top: 104px; }
 .pd-media {
   background: #fff;
@@ -364,8 +365,7 @@ img { max-width: 100%; display: block; }
   font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 999px;
 }
 .pd-thumbs {
-  display: flex; gap: 10px; margin-top: 12px;
-  overflow-x: auto; padding-bottom: 4px;
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
 }
 .pd-thumb {
   flex: 0 0 auto;
